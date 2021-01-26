@@ -37,4 +37,94 @@ When you signed up for the DreamFactory hosted trial, a test MySQL database cont
 
 To generate the MySQL API, click on the Services tab, and then click `Create`. You’ll be presented with a select box containing all supported databases. Choose the MySQL option (see below figure).
 
+![Choosing the MySQL Service Connector](chapter02/service-create-mysql.png)
 
+In order to generate the MySQL API you’ll need to supply several key pieces of information, beginning with the following items (see below screenshot):
+
+* **Name**: The name will form part of your API URI, so you'll want to use a lowercase string with no spaces or special characters. Further, you'll want to typically choose something which allows you to easily identify the API's purpose. For instance for your MySQL-backed API you might choose a name such as mysql, corporate, or store. Keep in mind lowercasing the name is a requirement.
+* **Label**: The label is used for referential purposes within the administration interface and system-related API responses. You can use something descriptive here, such as "MySQL-backed Corporate Database API".
+Description: Like the label, the description is used for referential purposes within the administration interface and system-related API responses.
+* **Active**: This determines whether the API is active. By default it is set to active however if you're not yet ready to begin using the API or would like to later temporarily disable it, just return to this screen and toggle the checkbox.
+
+![Configuring the MySQL Connector](chapter02/service-mysql-info.png)
+
+Once you’ve completed these items, click `Next` to continue. On this screen (see below screenshot), you’ll be prompted to enter the aforementioned connection details:
+
+* **Host**: The database server's host address. This may be an IP address or domain name.
+* **Port Number**: The database server's port number. For instance on MySQL this is 3306.
+* **Database**: The name of the database you'd like to expose via the API.
+* **Username**: The username associated with the database user account used to connect to the database.
+* **Password**: The password associated with the database user account used to connect to the database.
+
+![Configuring the Authentication Credentials](chapter02/service-create-mysql-credentials.png)
+
+Following the credential-related fields you’ll find a laundry list of other configurable options. None of these are relevant to our present project so we’ll forgo a lengthy description, however you can learn more about them at [https://guide.dreamfactory.com/](https://guide.dreamfactory.com/).
+
+After entering the credentials, scroll down to the bottom of the page and press the `Save` button to generate your MySQL API!
+
+## Reviewing the API Documentation
+
+After generating the API, click on the API Docs tab to review the associated documentation. DreamFactory autogenerates interactive OpenAPI documentation for any data source supported through a native connector, MySQL included. To access the documentation, click on the API Docs tab and then search for your newly created API using the search field at the top of the page.
+
+You’ll be presented with a list of 39 generated endpoints for this API (see below screenshot).
+
+![Viewing the API Documentation](chapter02/api-docs-mysql.png)
+
+Click on any endpoint and you’ll be able to interact with it using the point-and-click interface. For instance try clicking on the `GET /_table` endpoint to retrieve a list of tables found in the example database. You’ll be presented with the interface found in the following screenshot. Click the `Try it out` button and then press the `Execute` button.
+
+![Retrieving Table Endpoints](chapter02/api-docs-get-table.png)
+
+When you press `Execute`, DreamFactory will initiate a call to the chosen endpoint, and present the results within the interface. For instance, the below screenshot presents the `GET /_table` response. Note the response is returned in JSON format (DreamFactory also supports XML and CSV).
+
+![The Table Endpoint Response](chapter02/api-docs-get-table-response.png)
+
+Consider spending some time interacting with the other endpoints to get a sense for what you can do with the API!
+
+## Creating a Role
+
+With the MySQL API generated, let’s create an associated role-based access control (RBAC). An RBAC determines what exactly a client can do with your API. For instance you might want the API to be read-only, or perhaps access should be limited to a select few tables, views, or stored procedures. This is easily accomplished using the point-and-click interface. Click on the `Roles` tab to get started and you’ll be presented with the interface found in the following screenshot.
+
+![Creating a Role](chapter02/create-a-role.png)
+
+Click the `Create a Role!` button and you'll be prompted to enter a role name and description. Unlike the service name, the role name is only used for human consumption so be sure to name it something descriptive such as `MySQL Role`. You can ignore the `DN (Distinguished Name)` field because it’s used only when associating a Microsoft Active Directory group with a role. Click the `Next` button. You'll be prompted to identify the API(s) which should be associated with this role, and define the restrictions. The default interface looks like that presented in the below screenshot.
+
+![The Role Access Tab](chapter02/create-role-access-tab.png)
+
+The `Service` select box contains all of the APIs you've defined this far, including a few which are automatically included with each DreamFactory instance (`system`, `api_docs`, etc). Select the `mysql` service. After selecting the `mysql` service, click on the `Component` select box. You'll see this select box contains a list of all assets exposed through this API. If you leave the `Component` select box set to `*`, then the role will have access to all of the APIs assets. However, you're free to restrict the role's access to one or several assets by choosing for instance `_table/employees/*`. This would limit this role's access to just performing CRUD operations on the `employees` table. Further, using the `Access` select box, you can restrict which methods can be used by this role, selecting only GET, only POST, or any combination thereof.
+
+For our project you should configure the following settings:
+
+* **Service**: Choose the namespace designation associated with the generated MySQL API.
+* **Component**: Select the asterisk (`*`), meaning the microapp will have access to all endpoints.
+* **Access**: Select all five checkboxes. When done, this form control will be set to `5 Selected`.
+* **Requester**: Leave this set to `API`.
+
+After setting these values, click the `Save` button to generate your role!
+
+## Creating an API Key
+
+With the API and role generated, it’s time to generate an API key. This API key will accompany all API requests, and will be associated with the newly created role. DreamFactory will consult the associated role with each request to determine whether the client is authorized to complete the desired task. To generate the API key, click on the `Apps` tab. You’ll be presented with a table identifying a few API keys associated with predefined services such as `api_docs` and `file_manager`. Click the `Create` link located on the left side of the screen to generate a new key. You’ll be presented with the following screen:
+
+![Creating an API Key](chapter02/create-api-key.png)
+
+You’ll need to complete the fields presented on this screen to generate the API key:
+
+* **Application Name and Description**: The application name and description are used purely for human consumption, so feel free to complete these as you see fit.
+* **Active**: This checkbox can be used to toggle availability of the API key, which will be generated and presented to you when the application is saved.
+* **App Location**: This field presents four options for specifying the application's location. The overwhelming majority of users will choose No Storage Required because the API key will be used in conjunction with a mobile or web application, or via a server-side script.
+* **Assign a Default Role Filter**: Some of our customers manage dozens and even hundreds of roles within their DreamFactory environment! To help them quickly find a particular role we added this real-time filtering feature which will adjust what's displayed in the Assign a Default Role select box. You can leave this blank for now.
+* **Assign a Default Role**: It is here where you'll assign the newly created role to your application. Click on this select box and choose the role according to the name used in the last section.
+
+Click the `Save` button and the new API key will be generated. Click the clipboard icon next to your new API key to select the key, and then copy it to your clipboard, because in the next section we'll use it to interact with the API.
+
+## Testing the API
+
+With the API generated and associated RBAC and API key created, it’s time to begin interacting with the MySQL data via an API call! There are a few easy ways to do this, however the most straightforward involves downloading an API client such as Postman ([https://www.postman.com/](https://www.postman.com/)) or Insomnia ([https://insomnia.rest/](https://insomnia.rest/)).
+
+To begin interacting with your API, you’ll need to specify the HTTP method, desired API endpoint, and the API key. The API key is securely passed along in an HTTP header. The header should be named `X-DreamFactory-Api-Key`. In the below screenshot you’ll see an example involving querying a MySQL API.
+
+![Using Insomnia](chapter02/insomnia.png)
+
+## Conclusion
+
+With the API, role-based access control, and API key generated, it’s time to begin building the microapp!
