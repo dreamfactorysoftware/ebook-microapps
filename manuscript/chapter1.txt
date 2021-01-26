@@ -1,0 +1,44 @@
+# Chapter 1. Introducing Microapps
+
+If we look at the apps we use in our personal lives on a day to day basis, the Facebooks, TikToks, SnapChats, Airbnbs, and Spotifys of the world - they don't come with user manuals and yet we instinctively know how to use them. Our teenagers didn't read a 30 page manual on uploading photos to Instagram - because there isn't one. The best consumer apps are inherently intuitive and easy to use - that's why we use them! So why aren't enterprise applications the same?
+
+To most employees there's nothing more demoralizing than hard to use, complex enterprise systems. We've all been there - that application that your organisation has, that you only need a specific piece of information out of, or perhaps don't use that often. Research has shown that employees in an organisation will spend 20% just searching for information, and only use four or five of all available business application functions. In the midst of this, we're constantly distracted by notifications, messages and other interruptions, that we find ourselves spending the majority of our working day “context switching”. When do we get the time to spend on the real work, or rather, the work you want (and get paid) to do? In the end, it's all rather frustrating and depressing.
+
+A well designed Microapp serves one purpose, a single use-case or workflow. They should have a common consistent look and feel regardless of the underlying application(s) it is accessing. From the perspective of the end-user it should be self-explanatory and simple to use - like Instagram!
+
+## A Day in the Life With Really Hard Enterprise Apps
+
+Global Distributors is a large distributor of many thousands of products to retail outlets around the world. Global Distributors use a legacy ERP system called Products ERP which is backed by a MySQL database and which is accessed using a legacy JAVA client. The Products ERP system can only be accessed from within the office. End-users constantly complain that it's difficult to use. On a recent staff survey, end users complained that accessing Products ERP and navigating around the complicated UI made their jobs less satisfying. Global Distributors has tried to mitigate this in the past with in-depth user guides, however the employees find these guides complicated and there is a perception that “it's a waste of valuable time”.
+
+As part of this guide, we're going to focus on three key user communities within Global Distributors that use the Products ERP system. In the real world there are likely to be many more across different business units. Once you have implemented the basic case studies in this guide using DreamFactory and Citrix Microapps, you can explore other use cases to build out your Microapps. The three use cases we're going to consider as part of this guide are:
+
+* The Marketing Manager - responsible for all the product descriptions for each product held within Products ERP.
+* Sales Representatives - within Global Distributor need to be aware of when the details of a product change, with the nature of the business - is fairly frequently.
+* Product Manager - responsible for adding new products to Products ERP.
+
+### The Marketing Manager
+
+Using a combination of screen-shots and email, the Marketing Manager emails the entire sales force when the product description for a new product is added. This provides the Sales team with additional information about each product. Despite this laborious process, the Marketing Manager finds themself dealing with queries from Sales Reps all the time as they in turn don’t have the time nor skills to search the ERP for new product information.
+
+### The Sales Team 
+
+On a recent employee survey at Global Distributors, the biggest complaint from Sales Reps, particularly new hires, was that it was impossible to know every product that Global Distributors sold globally. Accessing the ERP to obtain the information was incredibly difficult; not only did they have to connect to the datacenter in head office over VPN, but to add to the misery the JAVA based ERP client only works on Windows. There’s no mobile app of any sort, making the retrieval of product information while on customer calls an incredibly challenging process.
+
+### The Products Manager
+
+When a new Product is added to Products ERP, the Products manager then notifies the Marketing Manager that a new product has been added - this is usually done via email or the in-house instant messaging system. Different Product Managers will use different methods of communication.
+
+## Microapp Use Cases
+
+As discussed, a Microapp should be a straightforward easy to use workflow for the end-users. Our above example surfaces a number of use-cases that we can transform into useful workflows within a Microapp. There are probably several use-cases with this example, however the ones we will tackle as part of this book are:
+
+* Allow the Marketing Manager to approve Product Descriptions without having to access the ERP and remove the need to use email to send product updates.
+* Provide Sales Reps with a simple interface to search for Products without access to the ERP.
+* Provide Sales Reps with a notification that Product has been updated without using email.
+* Allow a Products Manager to add new products to the database.
+
+There are other use cases that can build upon the examples above - we could add the ability to check stock/orders etc using straightforward CRUD actions against the Products database. Using Dreamfactory we could also combine other databases into the same API call or introduce more application logic using SQL Stored Procedures.
+
+## Conclusion
+
+Now that you have a basic understanding of the challenges enterprise software users face, and the role microapps can play in resolving workflow issues, let's move on to creating a few example microapps! In the next chapter we'll start by generating a database-backed API using the DreamFactory platform.

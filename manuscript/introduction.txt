@@ -1,0 +1,18 @@
+# Introduction
+
+Increasingly, customers are looking at useful, interesting and innovative use-cases that they can integrate with Microapps in Citrix Workspace. But what if your application does not have a RESTful API? What if your application is backed by a SQL Database and users are asking for a secure API?
+
+As with many application deployments, there’s usually a batch of applications that cannot be upgraded and are critical to a company’s business. These “last mile” applications need integration into your digital workspace, but the application does not provide the required interfaces to do so.
+
+This is where DreamFactory (https://www.dreamfactory.com) comes in. Using DreamFactory, organizations can automatically create API endpoints for those systems that do not have a RESTful interface. These APIs can in turn can be leveraged by Citrix Workspace to create single use workflows, or “Microapps” for end users to consume directly from their workspace without having to open, login to and access the original application.
+
+This guide uses a case study of a fictional company named Global Distributors. Like a lot of other companies, Global Distributors is not a cloud-first company, but rather one that depends upon a hybridized mix of SaaS, Windows, on-premises, and public cloud applications.
+
+# Prerequisites
+
+There are a number of prerequisites that you’ll ideally complete before starting this guide:
+
+* Request a 30-day Citrix Microapps Developer instance at https://developer.cloud.com/citrixworkspace/citrix-workspace-platform
+* Configure Authentication to Workspace https://developer.cloud.com/citrixworkspace/citrix-workspace-platform/build-workspace-microapp-integrations/docs/getting-started
+* Request a 14-day DreamFactory instance at https://genie.dreamfactory.com
+
