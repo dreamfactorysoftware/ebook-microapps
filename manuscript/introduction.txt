@@ -8,11 +8,28 @@ This is where DreamFactory (https://www.dreamfactory.com) comes in. Using DreamF
 
 This guide uses a case study of a fictional company named Global Distributors. Like a lot of other companies, Global Distributors is not a cloud-first company, but rather one that depends upon a hybridized mix of SaaS, Windows, on-premises, and public cloud applications.
 
-# Prerequisites
+## Prerequisites
 
 There are a number of prerequisites that you’ll ideally complete before starting this guide:
 
 * Request a 30-day Citrix Microapps Developer instance at https://developer.cloud.com/citrixworkspace/citrix-workspace-platform
 * Configure Authentication to Workspace https://developer.cloud.com/citrixworkspace/citrix-workspace-platform/build-workspace-microapp-integrations/docs/getting-started
 * Request a 14-day DreamFactory instance at https://genie.dreamfactory.com
+
+## About the Authors
+
+### John Moody
+
+John Moody is a Domain Specialist at Citrix. Having worked with Workspace technologies for over 20-years, John is passionate about removing unnecessary barriers at work so we can focus on 'real' creative work.
+
+John believes work should be about belonging, growth and achieving our personal goals, not about getting bogged down in clutter and distractions. John is passionate about how we can use technology to help support human sustainability and our mental health. In his spare time, John is a stand-up comedian.
+
+
+### Jason Gilmore
+
+Jason Gilmore is the CTO of DreamFactory Software. He has spent the past 20 years helping companies of all sizes build amazing products.
+
+Jason is the author of nine books, including the bestselling “Beginning PHP and MySQL, Fourth Edition”, “Easy Laravel 5”, “Easy PHP Websites with the Zend Framework, Second Edition”, and “Easy Active Record for Rails Developers”.
+
+Jason is cofounder of the wildly popular CodeMash Conference, the largest multi-day developer event in the Midwest. Away from the keyboard, you’ll often find Jason playing with his children, hunched over a chess board, or having fun with DIY electronics.
 

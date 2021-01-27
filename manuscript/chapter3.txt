@@ -1,7 +1,203 @@
-# Chapter Three
+# Chapter 3. Creating a Service Integration with Citrix Workspace
 
-To make a preview of your book, click on the "Preview" button on the left. We'll show you some links to download your book when the preview is complete.
+You will need to complete a number of prerequisites before you dive into building Microapps. Your end-users will access Microapps and workflows from their Citrix Workspace. In the real world, Citrix Workspace is used to access applications, workflows, data and desktops from any location. One service that is provisioned through Workspace is the Microapp functionality.
 
-You can keep writing in the meantime.
+In a development scenario, we want to build and test Microapp integrations and deploy them to test subscribers. To do this, we need to configure Identity and Access Management - the authentication our end-users will use to access Workspace. We then need to configure Citrix Workspace to display our Microapp integrations so end-users can access them. There are a number of guides in the Citrix Production Documentation that cover this subject:
 
-That's it for the brief introduction to Leanpub.
+* Request a 30-day Citrix Microapps Developer instance - [https://developer.cloud.com/citrixworkspace/citrix-workspace-platform](https://developer.cloud.com/citrixworkspace/citrix-workspace-platform)
+* Configure Authentication to Workspace - [https://developer.cloud.com/citrixworkspace/citrix-workspace-platform/build-workspace-microapp-integrations/docs/getting-started](https://developer.cloud.com/citrixworkspace/citrix-workspace-platform/build-workspace-microapp-integrations/docs/getting-started)
+* Enable Microapps in Workspace - [https://docs.citrix.com/en-us/citrix-microapps/getting-started.html#enable-microapps-service-in-workspace](https://docs.citrix.com/en-us/citrix-microapps/getting-started.html#enable-microapps-service-in-workspace)
+* Configure Citrix Workspace - [https://docs.citrix.com/en-us/citrix-workspace/configure.html](https://docs.citrix.com/en-us/citrix-workspace/configure.html)
+
+## Introducing the Microapp Service
+
+The Citrix Microapp Service is part of the overall Citrix Workspace platform. Citrix Workspace allows organizations to provide users with a single, easy to use digital workspace where all their applications, desktops and content can be securely delivered to any device. The Citrix Microapp Service takes Workspace to the next level by exposing workflows out of those applications so users can save time and deal with specific tasks without having to logon to the full application.
+
+The Microapp Service is a cloud hosted solution within Citrix Cloud. Typically, organizations would use the Microapp Service in conjunction with other services provided by Citrix Cloud.
+
+## Accessing the Microapp Designer
+
+You’ll build Microapps using the Microapp designer - a cloud hosted service in Citrix Cloud that allows you to configure out-of-box integrations, and as is the case with this example, custom connections using the HTTP Connector.
+
+Once you have requested your Microapp developer instance from developer.cloud.com, login to Citrix cloud from citrix.cloud.com using the credentials you used when signing up.
+
+You will be presented with the Citrix Cloud main dashboard.
+
+![The Citrix Cloud Dashboard](chapter03/Citrix_Cloud_Dashboard.jpg)
+
+The Citrix Cloud dashboard displays a list of all the services you are currently subscribed to. This guide assumes you have configured Identity and Access Management and also Citrix Workspace Configuration (See Chapter 3: Prerequisites).
+
+## Creating a Custom HTTP Integration
+
+From the Citrix Cloud dashboard, click the “Manage” button from the Microapps panel.
+
+From the Microapps Admin page, select “Integrations” from the main menu. This then opens the Microapp Integrations page where all your integrations will be listed.
+
+![The Microapp Admin Page](chapter03/Microapp_Admin_Page.jpg)
+
+From the top of the Microapp integrations page, select “Add Integration”. The “Choose Integration Type” dialog box will be displayed. For the purposes of this guide, select the “Create a new integration to your HTTP web service”.
+
+![Choosing Your Integration Type](chapter03/Choose_Integration_Type.jpg)
+
+The “Add HTTP Integration” page will be displayed.
+
+### Add HTTP Integration
+
+We first need to configure the basic integration. This includes configuring the REST endpoint we want to connect to and how we will authenticate. It will be useful at this point to have your DreamFactory configuration to hand as you will need the endpoint URL and `X-DreamFactory-API-Key`.
+
+![Configuring the Integration](chapter03/Service_Config.jpg)
+
+For the Integration Name, enter a logical and meaningful name for your integration, typically this is the name of your back-end system.
+
+Configure the Base URL as per your DreamFactory instance. This guide assumes you are using the cloud-hosted version of DreamFactory. You can find the base URL from the API Docs of your configured DreamFactory Service (see: Testing The API). Typically this is in the format of:
+
+```
+https://YOURINSTANCE.apps.dreamfactory.com/api/v2/
+```
+
+Select “API Keys” from the Service Authentication method pull down menu, you will then need to change the Method to “Header” from the API Keys selection. In the name enter `X-DreamFactory-Api-Key`.
+
+In the Value box, enter the `X-DreamFactory-Api-Key` as configured when you configured a Role in DreamFactory (see chapter 1). Click `Save` to save the initial service configuration. You will be returned to the main configuration screen.
+
+### Adding Data Endpoints
+
+The next step is to configure the data endpoint we wish to synchronize with the Microapp cache and use within our Microapp integrations. We do this through a “Data Endpoint”, typically this is a REST api destination or combination of different api destinations that build our tables in the Microapp cache. In the example we’re using as part of this guide, it may be a specific table(s) or procedure in our MySQL database that has been exposed through DreamFactory.
+
+At a configured interval, the Microapp service will synchronize the Microapp cache with the data endpoint. The synchronization interval is configurable. This is worth bearing in mind since our Microapps will be operating from a cache as opposed to working in real-time. The cache follows a typical relational database model. It is mandatory to configure primary keys on tables within the cache. Developers are able to link tables together and perform Child API calls on other end-points to build the cache.
+
+You are able to force a synchronization of the cache after we make a change. For example, if we were creating a Microapp for adding new products to the ERP, once we’ve submitted our new product using a POST Service Action, we can force the Microapp cache to perform a synchronization. This is covered in more detail in “Creating Service Actions”.
+
+We are going to configure a data load using an HTTP GET Request to our DreamFactory endpoint, specifically, the Products table in our MySQL database.
+
+From the main integration screen, select “Data Loading”.
+
+![Loading the Data](chapter03/data_loading.jpg)
+
+From the Data loading page, select “Add data endpoint”:
+
+![Adding the Data Endpoint](chapter03/edit_data_endpoint.jpg)
+
+In the Endpoint name field, enter a descriptive name for the endpoint, this can be anything and is not seen by the end-user using the Microapp. You may wish to use a naming convention at this point to maintain consistency across different endpoints, for the purposes of this guide, we’re using the name of the MySQL table we wish to talk too.
+
+It is possible to use dynamic values in the HTTP request we’re about to make if we want to use dynamic values as part of our HTTP GET request. For example, if we only wanted to retrieve records where a field is above a certain value, then we could configure a template variable to do this. Template variables can then be used using “double moustache” notation - `{{my_variable}}` - in any part of our GET request, including the URL, Query parameters or Header information.
+
+For now, enter the request URL from where we’ll GET our data, you can use the API Docs in DreamFactory to retrieve this information. In our example, we’re using the GET endpoint for the Products table.
+
+![The DreamFactory Table Name Endpoint](chapter03/get_table_name.jpg)
+
+![Adding the Endpoint](chapter03/get_table_name_ma.jpg)
+
+It is good practice to test your GET Request using a tool such as Postman or Insomnia.
+
+Click the `Test with parameters` button to check the configuration, click `Check Service` in the “Test service with parameters” blade. You will then see a success message, details of the GET request to the endpoint including a HTTP status of 200. If your request fails, check our HTTP GET configuration using a tool such as Postman or Insomnia.
+
+We now need to create a data structure that we’ll use as part of our Microapps. This is essentially a relational database within the Microapp cache that is populated by the requests made to the end-point. Click `Generate tables` to display the Generate tables blade.
+
+![Reviewing a Test Request](chapter03/generate_tables.jpg)
+
+Click the `Fetch JSON structure from API` button. This uses the JSON structure to define the fields and data types for the tables the Microapp service will use from the cache. The JSON structure will be displayed. We can see from the example above that individual records are contained within the `resource` array, therefore we need to add `resource` as the “Root path” for individual records. We can also change the base name of the table if required. This is useful if the Base table name provided automatically is not clear. Click `Generate tables`.
+
+![Generating the Tables](chapter03/generated_tables.jpg)
+
+Once the tables have been configured, we will need to set a Primary Key for the table. Click on the `Edit tables` button (highlighted above) to set the Primary Key, in this example, we’re going to set the field `ID` as the Primary Key.
+
+![Editing Table Attributes](chapter03/edit_table_attributes.jpg)
+
+Select the Primary Key and click `Save`. From the Add data endpoint screen, click `Add`. You will then be returned to the Data loading page.
+
+## Adding Service Actions
+
+In chapter 1, we discussed the use-cases that we want to provide with our Microapps, these were:
+
+* Allow the Marketing Manager to approve/edit/create Product Descriptions without having to access the ERP and remove the need to use email to send product updates.
+* Provide Sales Reps with a simple interface to search for Products without access to the ERP.
+* Provide Sales Reps with a notification that Product has been updated without using email.
+* Allow the Products Manager to add new products.
+
+In the first example, we require our Microapp to make changes (writebacks) to our Products Database, specifically, updating a specific field in an existing record. This is done using a HTTP PUT to our DreamFactory provided end-point. Within Microapps, a user initiated HTTP POST, PUT, DELETE etc is typically done using a Service Action.
+
+### Service Action - Approve Product Descriptions
+
+Service Actions are extremely flexible and are configured similar to Data Endpoints. We will create a Service Action that allows the Marketing Manager to approve changes to Product Descriptions.
+
+From the menu, select “Service Actions”, and click “Add Service action”. The “Add service action” page will be displayed.
+
+In the “Action name” field, enter a name for the Service Action.
+
+We now need to configure the Service Action parameters that will compose our HTTP PUT to the API endpoint.
+
+![Service Action Parameters](chapter03/service_action_parameters.jpg)
+
+In our example, we want to update two fields, “Approved” and “Description”. We’ll add these as Service Action parameters along with the ID of the record we’re updating.
+
+We then move to configure the Action Sequence. In advanced configurations, we may wish to configure data cache synchronization prior to our PUT request. We can also configure Post action data updates that would synchronize the cache following an update. For now, we’ll configure the Action execution.
+
+Select the Request type as “PUT” and configure the URL endpoint as the same one used in the initial Data Loading since this is the table within MySQL we want to update. We can now start to build up our HTTP PUT request, it is possible to configure Query parameters, Header parameters etc. However, these are not required for this example, however, we do want to configure the Body so our HTTP PUT request is in the correct format. Select the “Post mode” as JSON. In the body, place the JSON template as per the below:
+
+```
+{  "resource":
+  [
+    {
+      "id": {{id}},
+      "description": "{{description}}",
+      "approved": {{approved}}
+    }
+  ]
+}
+```
+
+The double-moustached variables, such as `{{description}}` refer to the Service Action parameters we configured above. When we come to build the pages of our Microapp, we will reference these Service Action parameters once more on our Product Description approval form.
+
+![Configuring a PUT Request](chapter03/configure_put_request.jpg)
+
+We can also click on the “Preview generated request” button to open the preview request blade to see what our request will look like, we can add in some test data and “Regenerate preview” will preview the request.
+
+Now that we’ve configured our Service Action, we can hit the “Save” button and return to the main integration page.
+
+### Service Action - Add New Products
+
+From the menu, select “Service Actions”, and click “Add Service action”. The “Add service action” page will be displayed. In the “Action name” field, enter a name for the Service Action.
+
+We now need to configure the Service Action parameters that will compose our HTTP POST to the API endpoint.
+
+We want to add all the fields that make up the Products table so we can add a new record, we’ll add these as Service Action parameters.
+
+Select the Request type as “POST” and configure the URL endpoint as the same one used in the initial Data Loading since this is the table within MySQL we want to update. We can now start to build up our HTTP POST request, configure the Body so our HTTP POST request is in the correct format. Select the “Post mode” as JSON. In the body, place the JSON template as per the below:
+
+```
+{
+"resource": 
+  [{
+    "sku": "{{sku}}",
+    "name": "{{name}}",
+    "price": "{{price}}",
+    "description": "{{description}}",
+    "approved": "FALSE"
+  }]
+}
+```
+
+![Configuring a POST Request](chapter03/configure_post_request.jpg)
+
+On this Service Action, when a new product is added to the database via the POST request, we should force a synchronization, so the data cache contains a copy of the new product. We can configure a “Post action data update” that will execute each time the Service Action completes successfully, accomplished by configuring the post action data update to GET all the records from the Products table.
+
+![Configuring a POST Action Data Update](chapter03/post_action_data_update.jpg)
+
+Set the Request to “GET” and enter the URL for the Products table.
+
+Now that we’ve configured our Service Action, we can hit the “Save” button and return to the main integration page.
+
+In a production environment, we could configure the post action update further using queries and parameters. For example, we could limit the request to new records only by using `{{id}}` to only retrieve the record we’ve just added in to the cache:
+
+```
+https://<YOUR DREAMFACTORY.apps.dreamfactory.com/api/v2/products/_table/products/{{ID}}
+```
+
+Where ID is configured as the Primary Key of the record we’ve just added.
+
+In summary - we should not have two Service Actions configured that:
+
+* Allow the Marketing Manager to update records in the database using a HTTP PUT Request.
+* Allow the Products Manager to add new records to the database using a HTTP POST request.
+
+We’re now ready to go and build some Microapps!

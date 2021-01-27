@@ -1,0 +1,208 @@
+Chapter 4. Creating a Microapp with Citrix Workspace
+
+Now that we have created our Service Integration, we can get to the good stuff and start building Microapps for our end-users. We’re going to build three Microapps that service our use-cases we discussed in chapter 1. As a reminder, these are:
+
+* Allow the Marketing Manager to approve Product Descriptions without having to access the ERP and remove the need to use email to send product updates.
+* Provide Sales Reps with a simple interface to search for Products without access to the ERP.
+* Provide Sales Reps with a notification that Product has been updated without using email.
+
+Microapps comprise two main elements, notifications and actions. Notifications can be configured to populate the main “news feed” of Citrix Workspace when there is a change in data - for example, a new record is added, or a change is detected. An action is a user-initiated workflow, for example, logging a ticket. Notifications and Actions make up the end-user Microapp experience.
+
+Microapps can vary in complexity, the Citrix Developer community provides a number of videos and walk-through guides that can really help to gain a thorough understanding of building complex Microapps to provide useful end-user workflows. For more information on the Microapp integrations learning journey, take a look at: [https://developer.cloud.com/citrixworkspace/citrix-workspace-platform/build-workspace-microapp-integrations/docs/learning-journey](https://developer.cloud.com/citrixworkspace/citrix-workspace-platform/build-workspace-microapp-integrations/docs/learning-journey).
+
+## Create a Microapp - Marketing Manager
+
+We will use the Service Integration we created in Chapter 3 and add Microapps to it. Select the Integration from the Microapp Integrations page and click the “Add Microapp” button, this will then create a blank microapp in the integration. Select the dot menu and click “Edit”.
+
+![Creating a New Microapp](chapter04/blank_microapp.jpg)
+
+Inside the Microapp, you will see four menus down the left hand side, Notifications, Pages, Localization and Properties.
+
+* Notifications allow us to configure just that - notifications we can send users when a particular event happens on our integration.
+* Pages are the main way in which end-users interact with our workflows, they allow users to view data, submit forms etc.
+* Localization allows us to add language files to our Microapps where we have a use case that requires another language other than English.
+* Properties - Allow us to rename our Microapp to something useful, change the app icon and also “End of Life” a Microapp where we’re able to turn it off, but leave notifications it has generated in the users feed. The Actions toggle allows us to enable our Microapp as an user initiated Action - This places the Microapp within the users “Actions” in Citrix Workspace. You can toggle the Action to “on” and then specify which page you want users to see first.
+
+Firstly, we’re going to configure two pages for our Marketing Manager. The first pages will allow the Marketing Manager to view all outstanding Product Descriptions that need approving. The second page will allow them to make changes to the Product Description and approve. The Marketing Manager will pick a product from the first page (a table) and it will open that record on a details (form) page. We will add the Service Action we created in the “Add Service Actions” section so we can allow the page to submit an update to the database.
+
+Later, we will configure a notification for the Marketing Manager that will notify her when a new product has been added to the database and requires the Product Description approving, opening up the details page directly from the Notification.
+
+## Creating a Product Approval Page
+
+Select “Pages” and then “Add Page”, give the page a simple name that the end-user is going to understand, such as “Approve Product Descriptions”, select the “Form” page type. We now need to configure the page to talk to the correct tables within our integration. From the “Select data source” pulldown menu, select “Products”, from the Select data table, select the “Product table”. Click Select Fields and select all fields and click “Set fields”.
+
+![Creating a New Page](chapter04/new_page.jpg)
+
+You will now be taken to the Page designer. You will notice that the fields that we selected are now present on the page as field inputs.
+
+From the Page Designer we can add UI elements to our pages, it is possible to add images, tables, lookups and other common UI interface elements. By all means play around with the different elements, however, remember not to over complicate your Microapp - we want our workflows to be simple and easy to follow.
+
+We need to change some of the fields within our page so end-users don’t make changes to records they shouldn't. Whilst the Service Action we configured does not change these fields, from a UI perspective, we probably want to change them from Text Input fields to just displaying the text.
+
+We’re going to firstly change the Product ID field from a Text Input to a hidden text field (as we need the Product ID for our Service Action later). From the Display UI elements, drag a “Text” element to the page. Select it and on the right hand Text Properties blade, Update the “Label” to “Product_ID”. Select the Data source as “Column value” and select the “Product_table” as the Data table. Select “ID” from the Data column. Lastly, click the “visible” toggle to “off” - this will hide the field element.
+
+![Changing the Product ID](chapter04/change_product_id_field.jpg)
+
+You can now delete the original ID text input box. The eagle eyed amongst you may be asking “why did we select all the fields in the first place if we’re just going to delete them?” This is true, in reality we only need to add the approve and description fields. However, by initially adding all the fields initially, it’s easy to make decisions about which fields you want to see, and what UI element you want them to be.
+
+As we don’t want our Marketing Manager to be able to change the SKU, Product Name and Price as well as ID - we need to replace the Text Input fields for these with Text fields.
+
+![Designing the Page Overview](chapter04/page_overview.jpg)
+
+We want to leave our Approved as a check box (True or False) and our Description Text input fields as we want our Marketing Manager to make changes to these fields.
+
+Finally, we need to add a Button element to the bottom of our page. We will then link this button to our Service Action so we can send the updated product description to the database.
+
+Add the button from the Input pallet to the bottom of the page. Select the button and the “Button properties” blade will be displayed. Expand “Actions”, select “Page action button”. From the “Add action…” pulldown, select “Run service action”. This configures the button to do something when selected by the user, in this case, it’ll run the specified Service Action. Select the “Products” table from the “Data” pulldown, and select the “Approve Change” Service action from the “Action” pulldown.
+
+We now need to configure what data we will pass the Service Action parameters we configured in “Add Service Actions”, click the “Edit Parameters” button.
+
+![Configuring Service Action Parameters](chapter04/service_action_parameters.jpg)
+
+The Service action parameters box will be displayed, all we do is simply align the fields we have configured on the page with the Service action parameters we’ve already specified. For example, we make `Id is equal to [component value] id [Text]`
+
+We then do the same for “Approved” and “Description”, making sure they are equal to the correct UI elements from the page. Click “Save” when you’re done.
+
+### Creating an Approvals Page
+
+Follow the steps to create a new page, instead of adding a “Form” page, add a “Table” page and call it “Outstanding Approvals”. Select “Products” as the data source and select the “Products” data table, add all the fields and click “Set Fields”.
+
+In your newly configured “Outstanding approvals” page, select the table that the designer has created, and select “Action” from the right-hand blade, in the “Goto page” pull down, select the previous page we just created (Approve Description Change).
+
+![Selecting the Page Design](chapter04/table_action_config.jpg)
+
+We now need to enable our Microapp as a user initiated action, go back to the Products Description Approvals Microapp by following the breadcrumb menu. Select Properties from the menu on the left and click the “Enable as action” toggle and select the Action page as “Outstanding Approvals”. This will allow the user to select the Product Description Approvals Action from their Workspace and be presented with the table of all approvals that are not completed (The approved field being “FALSE”). When they click on a record, they’ll be taken to the Approve Product Description page to approve the change.
+
+## Creating a Notification
+Notifications appear in the users activity feed and are events from the system of record. In our example, we’re using events to notify the Marketing Manager that a new Product has been added to the database and requires a Product Description approval and also the Sales Reps that a Product has an updated description.
+
+When configuring Notifications ensure that that the notification is actually relevant and useful, in a production environment, there may be several Systems of Record connected to the users Workspace. Filling the activity feed full of notifications that are not useful leads to a poor user experience. We’ll focus on creating the first Notification so the Marketing Manager receives a notification of when a new Product is added to the database and requires a product description approval.
+
+From the Product Description Approvals Microapp, select Notifications. Click “Add New Notification”. The “New Notification” blade will open. Give the notification a name.
+
+There are different event triggers that can be used, for our notification, we’re going to use “New Records”, so each time a new product record is added, we’ll get a notification. Notifications will only appear for new products when they are synchronized with the data cache. If you add a new product to the MySQL database, be sure to perform a Data Synchronization to load those new products into the cache.
+
+Select the data source as the “Products” data source and the data table as “Product Table”, click “Add”. You will now be taken to the “Edit Notification” page.
+
+From the “Edit Notification” page, select the “Automatically run this event after the integration data change”. This will run the notification whenever the data cache is synchronized with the MySQL database.
+
+We can now build what our Notification will look like in the “Content” box, as you build the Content, a preview is displayed under “Activity feed preview”.
+
+![Building the Notification Content](chapter04/notification_content.jpg)
+
+In the “Title” field, enter:
+
+```
+{{name}} requires an approval for the Product Description
+```
+
+In the Body field enter a descriptive message for the end user, for example
+
+```
+Please approve the following product description for {{name}}.
+The proposed description is: {{description}}
+```
+
+The double moustached variables relate to fields in the “Product” table, this allows you to get really creative in creating useful human readable notifications for end users.
+
+Scroll down to the “Target page” box and select the “Target Page” as the “Approve Products” page we created earlier. This will enable an user to click on the notification in their activity feed and then open up the record directly in the blade from the Notification, there the user can review and edit the Product Description and approve.
+
+![Choosing the Notification Target Page](chapter04/notification_target_page.jpg)
+
+We will configure our Notification so it appears for all subscribers to the Microapp, which is the default setting. We do need to add a condition however, so our notification only appears when the product description has not been approved.
+
+![Notification Settings](chapter04/notification_settings.jpg)
+
+Click the “Edit conditions” button, the “Edit conditions blade will be displayed.
+
+![Notification Edit Conditions](chapter04/notification_edit_conditions.jpg)
+
+Select the “Data table” as the product_table, “Data column as “approved” and the conditions as “is equal to FALSE”. Any record in the product table where the approved field is equal to FALSE will now trigger a notification for that record. Click “Save”.
+
+Conditions for both displaying and deleting a notification allow you to fine tune when notifications appear and when they are deleted. This ensures that only notifications that are relevant to end-users are displayed.
+
+We can set an expiration on our notifications, either when the record is deleted (i.e we remove a record from the `product_table` or after a specified time interval, or we can build a condition or multiple conditions. For the purposes of our example, we’re going to leave this as the default. Click “Save” from the top of the page to save the notification.
+
+We’ve now completed the basic elements of our first Microapp.
+
+## Creating a Microapp for Sales Reps
+
+We’ve now gone through the basics of creating our first Microapp for the Marketing Manager, we now need to build additional Microapps for the Sales Reps so they can receive notifications of when a product has an updated description, and also search the Product database.
+
+The Sales Rep Microapp will consist of the following:
+
+* A Notification when a product has an updated Product Description
+* A Page that displays the product with the updated description (this will be used by the Notification)
+* A Page that is the Action Page to allow the Sales Rep to search the Products database.
+
+To build the Sales Rep Microapp:
+
+# Create a Microapp for use by the Sales Reps.
+# Add a page called “Display Product Detail”, make this a “Detail” page, add the “Products” data source and all fields from the “Products” Table.
+# Add a page called “Search Product Catalog”, make this a “Form” page.
+
+![Adding Product Search](chapter04/sales_rep_add_product_search.jpg)
+
+On the “Search Product Catalog” page, add a “Look Up” UI element.
+
+![Adding a Lookup Element](chapter04/sales_rep_lookup.jpg)
+
+Select the “Look Up” UI element properties and set the following values:
+
+* Data table: `product_table`
+* Data column: `name`
+* Data source to search: `Products`
+* Data table to search: `product_table`
+* Data column to search: `name`
+* Data column to use as value: `id`
+
+![Sales Rep Lookup Config](chapter04/sales_rep_lookup_config.jpg)
+
+Create a new Notification called “New Product Description Notification”, configure it to run automatically after the integration data change, use the variables to create a useful notification for the Sales Rep when a product description has changed. Under settings, Select “Edit conditions” and select: `product_table approved becomes equal to TRUE`
+
+## We’ve one last Microapp to add. In this Microapp, we’ll allow the Products Manager to add new Products to the database.
+
+The Products Manager Microapp will consist of a “Form” Page to allow a new product to be added to the Products table.
+
+To build the Products Manager Microapp, follow these steps:
+
+* Create a new Microapp for the Products Manager
+* Add a new “Form” Page for that the Products Manager will use to add new products.
+* Configure with the Text input fields:
+* SKU (numeric)
+* Name
+* Description
+* Price (numeric)
+
+![Adding a Product](chapter04/products_manager_add_new.jpg)
+
+Add a new Service Action button and configure the Data as “Products” and the action as per the Service Action that was created in section “Service Action - Add New Products”.
+
+![Product Manager Service Action Parameters](chapter04/products_manager_service_action_params.jpg)
+
+Once the page is complete, from the “Add new product” Microapp screen, select properties and ensure the “Enable as action” is selected and the “Add New Product” selected as the default page.
+
+That concludes our basic Products Manager Microapp! As with all the Microapps we’ve built, you’ve many options to expand and improve them. You can also play around with the UI by adding in images, and descriptive text for what each page is therefore and help users to complete the workflows.
+
+## Adding Users to a Microapp
+
+We subscribe users to each Microapp so the actions and notifications appear in their feed. In order to add users, you will need to ensure that Identity and Access Management is configured for Citrix Workspace. 
+
+To use Azure Active Directory for Citrix Workspace authentication, see the following guides:
+
+* [https://docs.citrix.com/en-us/citrix-cloud/citrix-cloud-management/identity-access-management/connect-azure-ad.html#connect-citrix-cloud-to-azure-ad](https://docs.citrix.com/en-us/citrix-cloud/citrix-cloud-management/identity-access-management/connect-azure-ad.html#connect-citrix-cloud-to-azure-ad)
+* [https://developer.cloud.com/citrixworkspace/citrix-workspace-platform/build-workspace-microapp-integrations/docs/getting-started](https://developer.cloud.com/citrixworkspace/citrix-workspace-platform/build-workspace-microapp-integrations/docs/getting-started)
+
+To add a user or group to a Microapp, select "Subscriptions" from the ellipsis menu:
+
+![Adding Users](chapter04/add_subscribers.jpg)
+
+In the “Search” dialog box, enter the username or group name of the user or group you want to add. The username or group will appear as a subscriber.
+
+![Adding Subscribers Dialog](chapter04/add_subscribers_dialog.jpg)
+
+You can now login to your Citrix Workspace instance as your test user and test your Microapps!
+
+## Conclusion
+
+Microapps can bring tremendous productivity gains to your enterprise. Thanks to solutions like Citrix Workspace and DreamFactory, it's possible to create and deploy powerful microapps faster than ever, and with remarkably little code. If you'd like to learn more about these solutions, contact John Moody (john.moody@citrix.com) and Jason Gilmore (jason.gilmore@dreamfactory.com)!
