@@ -137,9 +137,9 @@ The Sales Rep Microapp will consist of the following:
 
 To build the Sales Rep Microapp:
 
-# Create a Microapp for use by the Sales Reps.
-# Add a page called “Display Product Detail”, make this a “Detail” page, add the “Products” data source and all fields from the “Products” Table.
-# Add a page called “Search Product Catalog”, make this a “Form” page.
+* Create a Microapp for use by the Sales Reps.
+* Add a page called “Display Product Detail”, make this a “Detail” page, add the “Products” data source and all fields from the “Products” Table.
+* Add a page called “Search Product Catalog”, make this a “Form” page.
 
 ![Adding Product Search](chapter04/sales_rep_add_product_search.jpg)
 
@@ -160,7 +160,9 @@ Select the “Look Up” UI element properties and set the following values:
 
 Create a new Notification called “New Product Description Notification”, configure it to run automatically after the integration data change, use the variables to create a useful notification for the Sales Rep when a product description has changed. Under settings, Select “Edit conditions” and select: `product_table approved becomes equal to TRUE`
 
-## We’ve one last Microapp to add. In this Microapp, we’ll allow the Products Manager to add new Products to the database.
+## Creating a New Products Microapp
+
+We’ve one last Microapp to add. In this Microapp, we’ll allow the Products Manager to add new Products to the database.
 
 The Products Manager Microapp will consist of a “Form” Page to allow a new product to be added to the Products table.
 

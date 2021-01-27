@@ -46,7 +46,7 @@ In order to generate the MySQL API you’ll need to supply several key pieces of
 Description: Like the label, the description is used for referential purposes within the administration interface and system-related API responses.
 * **Active**: This determines whether the API is active. By default it is set to active however if you're not yet ready to begin using the API or would like to later temporarily disable it, just return to this screen and toggle the checkbox.
 
-![Configuring the MySQL Connector](chapter02/service-mysql-info.png)
+![Configuring the MySQL Connector](chapter02/service-create-mysql-info.png)
 
 Once you’ve completed these items, click `Next` to continue. On this screen (see below screenshot), you’ll be prompted to enter the aforementioned connection details:
 

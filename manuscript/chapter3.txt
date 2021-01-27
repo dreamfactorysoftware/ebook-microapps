@@ -49,7 +49,7 @@ We first need to configure the basic integration. This includes configuring the 
 
 For the Integration Name, enter a logical and meaningful name for your integration, typically this is the name of your back-end system.
 
-Configure the Base URL as per your DreamFactory instance. This guide assumes you are using the cloud-hosted version of DreamFactory. You can find the base URL from the API Docs of your configured DreamFactory Service (see: Testing The API). Typically this is in the format of:
+Configure the Base URL as per your DreamFactory instance. This guide assumes you are using the cloud-hosted version of DreamFactory. You can find the base URL from the API Docs of your configured DreamFactory Service (see: Testing The API). When using the hosted environment that base URL will look like this:
 
 ```
 https://YOURINSTANCE.apps.dreamfactory.com/api/v2/
@@ -69,11 +69,11 @@ You are able to force a synchronization of the cache after we make a change. For
 
 We are going to configure a data load using an HTTP GET Request to our DreamFactory endpoint, specifically, the Products table in our MySQL database.
 
-From the main integration screen, select “Data Loading”.
+From the main integration screen, select "Data Loading":
 
 ![Loading the Data](chapter03/data_loading.jpg)
 
-From the Data loading page, select “Add data endpoint”:
+From the Data loading page, select "Add data endpoint"
 
 ![Adding the Data Endpoint](chapter03/edit_data_endpoint.jpg)
 
