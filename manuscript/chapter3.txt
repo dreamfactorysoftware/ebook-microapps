@@ -75,7 +75,7 @@ From the main integration screen, select "Data Loading":
 
 From the Data loading page, select "Add data endpoint"
 
-![Adding the Data Endpoint](chapter03/edit_data_endpoint.jpg)
+![Adding the Data Endpoint](chapter03/edit_data_endpoint.png)
 
 In the Endpoint name field, enter a descriptive name for the endpoint, this can be anything and is not seen by the end-user using the Microapp. You may wish to use a naming convention at this point to maintain consistency across different endpoints, for the purposes of this guide, we’re using the name of the MySQL table we wish to talk too.
 
@@ -85,7 +85,7 @@ For now, enter the request URL from where we’ll GET our data, you can use the 
 
 ![The DreamFactory Table Name Endpoint](chapter03/get_table_name.jpg)
 
-![Adding the Endpoint](chapter03/get_table_name_ma.jpg)
+![Adding the Endpoint](chapter03/get_table_name_ma.png)
 
 It is good practice to test your GET Request using a tool such as Postman or Insomnia.
 
@@ -97,7 +97,7 @@ We now need to create a data structure that we’ll use as part of our Microapps
 
 Click the `Fetch JSON structure from API` button. This uses the JSON structure to define the fields and data types for the tables the Microapp service will use from the cache. The JSON structure will be displayed. We can see from the example above that individual records are contained within the `resource` array, therefore we need to add `resource` as the “Root path” for individual records. We can also change the base name of the table if required. This is useful if the Base table name provided automatically is not clear. Click `Generate tables`.
 
-![Generating the Tables](chapter03/generated_tables.jpg)
+![Generating the Tables](chapter03/generated_tables.png)
 
 Once the tables have been configured, we will need to set a Primary Key for the table. Click on the `Edit tables` button (highlighted above) to set the Primary Key, in this example, we’re going to set the field `ID` as the Primary Key.
 
@@ -181,7 +181,7 @@ Select the Request type as “POST” and configure the URL endpoint as the same
 
 On this Service Action, when a new product is added to the database via the POST request, we should force a synchronization, so the data cache contains a copy of the new product. We can configure a “Post action data update” that will execute each time the Service Action completes successfully, accomplished by configuring the post action data update to GET all the records from the Products table.
 
-![Configuring a POST Action Data Update](chapter03/post_action_data_update.jpg)
+![Configuring a POST Action Data Update](chapter03/post_action_data_update.png)
 
 Set the Request to “GET” and enter the URL for the Products table.
 
